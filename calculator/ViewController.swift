@@ -8,47 +8,48 @@
 
 import UIKit
 
-enum operations {
-    case NOT_SET
-    case MULTIPLY
-    case DIVIDE
-    case ADD
-    case SUBTRACT
-}
-
-class ViewController: UIViewController {
+class Calculator {
+    enum operations {
+        case NOT_SET
+        case MULTIPLY
+        case DIVIDE
+        case ADD
+        case SUBTRACT
+    }
+    
     var labelString:String = "0"
     var operation:operations = operations.NOT_SET
     var savedNum:Double = 0
     var lastButtonWasOperation:Bool = false
     
-    @IBOutlet weak var label: UILabel!
+    func updateText() -> String {
+        guard let labelDouble:Double = Double(labelString) else {
+            return "Conversion Failed!"
+        }
+        if operation == operations.NOT_SET {
+            savedNum = labelDouble
+        }
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
+        return numberFormatter.string(from: NSNumber(value:labelDouble))!
+    }
     
-    @IBAction func tappedClear(_ sender: Any) {
+    func changeOperations(newOperation:operations) {
+        if savedNum == 0 {
+            return
+        }
+        operation = newOperation
+        lastButtonWasOperation = true
+    }
+    
+    func clear() {
         labelString = "0"
         savedNum = 0
-        label.text = "0"
         operation = operations.NOT_SET
         lastButtonWasOperation = false
     }
     
-    @IBAction func tappedDivide(_ sender: Any) {
-        changeOperations(newOperation: operations.DIVIDE)
-    }
-    
-    @IBAction func tappedMultiply(_ sender: Any) {
-        changeOperations(newOperation: operations.MULTIPLY)
-    }
-    
-    @IBAction func tappedAdd(_ sender: Any) {
-        changeOperations(newOperation: operations.ADD)
-    }
-    
-    @IBAction func tappedSubtract(_ sender: Any) {
-        changeOperations(newOperation: operations.SUBTRACT)
-    }
-    
-    @IBAction func tappedEqual(_ sender: Any) {
+    func equal() {
         guard let num:Double = Double(labelString) else {
             return
         }
@@ -66,40 +67,55 @@ class ViewController: UIViewController {
         }
         operation = operations.NOT_SET
         labelString = "\(savedNum)"
-        updateText()
         lastButtonWasOperation = true
     }
     
-    @IBAction func tappedNumber(_ sender: UIButton) {
+    func number(num: String) {
         if lastButtonWasOperation {
             lastButtonWasOperation = false
             labelString = "0"
-            updateText()
-            
         }
-        labelString = labelString.appending((sender.titleLabel?.text)!)
-        updateText()
+        labelString = labelString.appending(num)
     }
     
-    func updateText(){
-        guard let labelDouble:Double = Double(labelString) else {
-            label.text = "Conversion Failed!"
-            return
-        }
-        if operation == operations.NOT_SET {
-            savedNum = labelDouble
-        }
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = NumberFormatter.Style.decimal
-        label.text = numberFormatter.string(from: NSNumber(value:labelDouble))
+}
+
+
+
+class ViewController: UIViewController {
+    let calc = Calculator()
+    
+    @IBOutlet weak var label: UILabel!
+    
+    @IBAction func tappedClear(_ sender: Any) {
+        calc.clear()
+        label.text = "0"
     }
     
-    func changeOperations(newOperation:operations) {
-        if savedNum == 0 {
-            return
-        }
-        operation = newOperation
-        lastButtonWasOperation = true
+    @IBAction func tappedDivide(_ sender: Any) {
+        calc.changeOperations(newOperation: Calculator.operations.DIVIDE)
+    }
+    
+    @IBAction func tappedMultiply(_ sender: Any) {
+        calc.changeOperations(newOperation: Calculator.operations.MULTIPLY)
+    }
+    
+    @IBAction func tappedAdd(_ sender: Any) {
+        calc.changeOperations(newOperation: Calculator.operations.ADD)
+    }
+    
+    @IBAction func tappedSubtract(_ sender: Any) {
+        calc.changeOperations(newOperation: Calculator.operations.SUBTRACT)
+    }
+    
+    @IBAction func tappedEqual(_ sender: Any) {
+        calc.equal()
+        label.text = calc.updateText()
+    }
+    
+    @IBAction func tappedNumber(_ sender: UIButton) {
+        calc.number(num: (sender.titleLabel?.text)!)
+        label.text = calc.updateText()
     }
 
 
