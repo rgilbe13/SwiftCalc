@@ -9,115 +9,109 @@
 import Foundation
 
 class Calculator {
-    var labelString:String
-    var queue:CalcQueue<Character>
-    var wasPeriodPressed:Bool
-    var lastKeyWasOperation:Bool
+    var operators: [String: Int] = ["*": 3, "/": 3, "+": 2, "-": 2]
     
-    init() {
-        labelString = "0"
-        queue = CalcQueue()
-        wasPeriodPressed = false
-        lastKeyWasOperation = false
-    }
-    
-    func clear() {
-        labelString = "0"
-        wasPeriodPressed = false
-        queue = CalcQueue()
-        lastKeyWasOperation = false
-    }
-    
-    func equal() {
-        var calculatedQueue:CalcQueue<Character> = CalcQueue()
-        let operators = ["/", "*", "+", "-"]
-        var left:String = ""
-        var right:String = "
-        var op:Character = ""
-        var hasParenthesis:Bool = false
-        var level1 = true
-        var level2 = true
+    func parse(input: String) -> String {
+        var stack = Stack<String>()
+        var output = Queue<String>()
         
-        for i in 0...queue.count-1 {
-            
-            if queue.indexAt(int: i) == "(" && queue.indexAt(int: i+1) == "(" {
-                calculatedQueue.push(value: queue.indexAt(int: i))
-                hasParenthesis = true
-            }
-            
-            if queue.indexAt(int: i) == "(" && Int(String(queue.indexAt(int: i+1))) != nil {
-                for x in i+1...queue.count-1 {
-                    if queue.indexAt(int: x) == "." || Int(String(queue.indexAt(int: x))) != nil {
-                        left.append(queue.indexAt(int: x))
-                    } else if (operators.contains(String(queue.indexAt(int: x))) {
-                        op = queue.indexAt(int: x)
-                    }
+        var segmentedInput: String = input.replacingOccurrences(of: "+", with: "|+|")
+        segmentedInput = segmentedInput.replacingOccurrences(of: "-", with: "|-|")
+        segmentedInput = segmentedInput.replacingOccurrences(of: "*", with: "|*|")
+        segmentedInput = segmentedInput.replacingOccurrences(of: "/", with: "|/|")
+        segmentedInput = segmentedInput.replacingOccurrences(of: "(", with: "|(|")
+        segmentedInput = segmentedInput.replacingOccurrences(of: ")", with: "|)|")
+        
+        let tokens = segmentedInput.components(separatedBy: "|")
+        
+        for token in tokens {
+            // if token is a number add to queue
+            if  token.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil{
+                output.enqueue(newElement: token)
+            //if token is an operator
+            } else if isOperator(op: token) {
+                // if the stack has lower operators then pop them to the queue
+                while !stack.isEmpty && isOperator(op: stack.top()) && operators[stack.top()]! > operators[token]! {
+                    output.enqueue(newElement: stack.pop())
                 }
-            }
-            
-        }
-        
-    }
-    
-    func addToQueue(char: Character) {
-        if lastKeyWasOperation && (char == "/" || char == "*" || char == "+" || char == "-") {
-            /// change the operation remove the most recent and push new op on queue
-            queue.replaceAt(int: queue.count-1, char: char)
-        } else {
-            if wasPeriodPressed && char == "." {
-                // ignore
-            } else {
-                queue.push(value: char)
-            }
-            
-        }
-        
-        if char == "." {
-            wasPeriodPressed = true
-        }
-        
-        if char == "/" || char == "*" || char == "+" || char == "-" {
-            lastKeyWasOperation = true
-            wasPeriodPressed = false
-        } else {
-            lastKeyWasOperation = false
-        }
-        
-    }
-    
-    func handleParenthesis() {
-        if queue.count == 0 {
-            addToQueue(char: "(")
-            return
-        }
-        
-        let prevPressedButton: Character = queue.indexAt(int: queue.count-1)
-        
-        if Int(String(prevPressedButton)) != nil && queue.unmatchedParentesis() {
-            addToQueue(char: ")")
-        } else if prevPressedButton == "/" || prevPressedButton == "*" || prevPressedButton == "+" || prevPressedButton == "-" {
-            addToQueue(char: "(")
-        } else if prevPressedButton == "." {
-            addToQueue(char: ")")
-        } else if prevPressedButton == "(" {
-            addToQueue(char: "(")
-        } else if prevPressedButton == ")" {
-            if queue.unmatchedParentesis() {
-                addToQueue(char: ")")
-            } else {
-                addToQueue(char: "*")
-                addToQueue(char: "(")
+                //push new token to stack
+                stack.push(newElement: token)
+                
+            } else if token == "(" {
+                stack.push(newElement: token)
+            } else if token == ")" {
+                // until the token on the stack is the left most parenthesis
+                while !stack.isEmpty && stack.top() != "(" {
+                    output.enqueue(newElement: stack.pop())
+                }
+                
+                if stack.isEmpty {
+                    return "Error"
+                }
+                
+                // get rid of the left paren from stack
+                stack.pop()
             }
         }
+        
+        while !stack.isEmpty && isOperator(op: stack.top()) {
+            output.enqueue(newElement: stack.pop())
+        }
+        
+        return output.elements.joined(separator: "|")
     }
     
-    /// loop through the array and return a string
-    func getLabel() -> String {
-        var label:String = ""
-        for i in 0...queue.count-1  {
-            label.append(String(describing: queue.indexAt(int: i)))
+    func isOperator(op: String) -> Bool {
+        var isOp: Bool = false
+        for (key,_) in operators {
+            if key == op {
+                isOp = true
+            }
         }
-        return label
+        
+        return isOp
+    }
+    
+    func solve(rpn: String) -> String {
+        var stack = Stack<String>()
+        let tokens = rpn.components(separatedBy: "|")
+        var result: Double = 0.0
+        
+        for token in tokens {
+            // if token is a number add to queue
+            if  token.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil{
+                stack.push(newElement: token)
+                //if token is an operator
+            } else if isOperator(op: token) && stack.count() > 1 {
+                guard let rightOperand:Double = Double(stack.pop()) else {
+                    return "Failed"
+                }
+                guard let leftOperand:Double = Double(stack.pop()) else {
+                    return "Failed"
+                }
+                
+                if token == "+" {
+                    result = leftOperand + rightOperand
+                } else if token == "-" {
+                    result = leftOperand - rightOperand
+                } else if token == "*" {
+                    result = leftOperand * rightOperand
+                } else if token == "/" {
+                    result = leftOperand / rightOperand
+                }
+                
+                
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = NumberFormatter.Style.decimal
+                let stringResult:String = numberFormatter.string(from: NSNumber(value:result))!
+
+                stack.push(newElement: stringResult)
+                
+            }
+        }
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = NumberFormatter.Style.decimal
+        return numberFormatter.string(from: NSNumber(value:result))!
     }
     
 }

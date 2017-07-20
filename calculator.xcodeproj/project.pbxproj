@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D42D17A51F12AE120052B0F5 /* CalcQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42D17A41F12AE120052B0F5 /* CalcQueue.swift */; };
+		D42D17A51F12AE120052B0F5 /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = D42D17A41F12AE120052B0F5 /* Queue.swift */; };
 		D43A93011F0188B500CF5CE5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43A93001F0188B500CF5CE5 /* AppDelegate.swift */; };
 		D43A93031F0188B500CF5CE5 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43A93021F0188B500CF5CE5 /* MainViewController.swift */; };
 		D43A93061F0188B500CF5CE5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D43A93041F0188B500CF5CE5 /* Main.storyboard */; };
@@ -16,6 +16,7 @@
 		D43A93161F0188B500CF5CE5 /* calculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43A93151F0188B500CF5CE5 /* calculatorTests.swift */; };
 		D43A93211F0188B500CF5CE5 /* calculatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43A93201F0188B500CF5CE5 /* calculatorUITests.swift */; };
 		D48784A31F1093E300B5E953 /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48784A21F1093E300B5E953 /* Calculator.swift */; };
+		D4D1A38B1F1EE756003F454B /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D1A38A1F1EE756003F454B /* Stack.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D42D17A41F12AE120052B0F5 /* CalcQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalcQueue.swift; sourceTree = "<group>"; };
+		D42D17A41F12AE120052B0F5 /* Queue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		D43A92FD1F0188B500CF5CE5 /* calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43A93001F0188B500CF5CE5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D43A93021F0188B500CF5CE5 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -51,6 +52,7 @@
 		D43A93201F0188B500CF5CE5 /* calculatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = calculatorUITests.swift; sourceTree = "<group>"; };
 		D43A93221F0188B500CF5CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D48784A21F1093E300B5E953 /* Calculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
+		D4D1A38A1F1EE756003F454B /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,7 +135,8 @@
 			isa = PBXGroup;
 			children = (
 				D48784A21F1093E300B5E953 /* Calculator.swift */,
-				D42D17A41F12AE120052B0F5 /* CalcQueue.swift */,
+				D42D17A41F12AE120052B0F5 /* Queue.swift */,
+				D4D1A38A1F1EE756003F454B /* Stack.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -290,8 +293,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				D43A93031F0188B500CF5CE5 /* MainViewController.swift in Sources */,
+				D4D1A38B1F1EE756003F454B /* Stack.swift in Sources */,
 				D43A93011F0188B500CF5CE5 /* AppDelegate.swift in Sources */,
-				D42D17A51F12AE120052B0F5 /* CalcQueue.swift in Sources */,
+				D42D17A51F12AE120052B0F5 /* Queue.swift in Sources */,
 				D48784A31F1093E300B5E953 /* Calculator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
