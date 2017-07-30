@@ -9,6 +9,8 @@
 import XCTest
 
 class calculatorUITests: XCTestCase {
+    
+    let app = XCUIApplication()
         
     override func setUp() {
         super.setUp()
@@ -28,9 +30,21 @@ class calculatorUITests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testDoesAppLoad() {
+        XCTAssertTrue(app.otherElements["MainCalculator"].exists)
+    }
+    
+    func testSimpleCalculation() {
+        XCUIDevice.shared().orientation = .landscapeRight
+        
+        let app = XCUIApplication()
+        app.buttons["8"].tap()
+        app.buttons["+"].tap()
+        app.buttons["5"].tap()
+        app.buttons["="].tap()
+        XCTAssertTrue(app.otherElements["bottomLabel"].value as! String == "13")
+        app.buttons["C"].tap()
+        
     }
     
 }

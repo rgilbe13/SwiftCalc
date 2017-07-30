@@ -10,11 +10,19 @@ import UIKit
 
 class ViewController: UIViewController {
     let calc = Calculator()
+    var operatorCharacterSet: CharacterSet = []
     
-
     @IBOutlet weak var topLabel: UILabel!
-    
+    @IBOutlet weak var pieButton: UIButton!
+    @IBOutlet weak var stackView6: UIStackView!
     @IBOutlet weak var bottomLabel: UILabel!
+    @IBOutlet weak var memoryMinus: UIButton!
+    @IBOutlet weak var memoryPlus: UIButton!
+    @IBOutlet weak var clearEntry: UIButton!
+    @IBOutlet weak var tan: UIButton!
+    @IBOutlet weak var memoryRecall: UIButton!
+    @IBOutlet weak var multiplicativeInverse: UIButton!
+    @IBOutlet weak var memoryClear: UIButton!
     
     @IBAction func tappedButton(_ sender: Any) {
         if topLabel.text == "0" {
@@ -24,11 +32,25 @@ class ViewController: UIViewController {
         
         let inputLabel: String = ((sender as AnyObject).titleLabel??.text)!
         
+        if inputLabel == "CE" && (topLabel.text?.characters.count)! > 0 {
+            topLabel.text = topLabel.text?.substring(to: (topLabel.text?.index(before: (topLabel.text?.endIndex)!))!)
+        } else if inputLabel == "π" {
+            topLabel.text?.append("3.14159")
+        } else if inputLabel == "MR" {
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = NumberFormatter.Style.decimal
+            //topLabel.text = numberFormatter.string(from: NSNumber(value:calc.memoryResult))!
+
+        } else if inputLabel == "+/-" {
+            print(calc.lastNumber())
+        } else {
+            topLabel.text?.append(inputLabel)
+        }
+        
         if !validateInput(input: topLabel.text! + inputLabel) {
             return
         }
 
-        topLabel.text?.append(inputLabel)
         let x: String = calc.parse(input: (topLabel.text)!)
         let y: String = calc.solve(rpn: x)
         let operators = ["+", "-", "*", "/"]
@@ -45,6 +67,7 @@ class ViewController: UIViewController {
     
     @IBAction func tappedEqual(_ sender: Any) {
         topLabel.text = ""
+        stackView6.sizeToFit()
     }
     
     func validateInput(input: String) -> Bool {
@@ -85,13 +108,40 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        view.accessibilityIdentifier = "MainCalculator"
+        bottomLabel.accessibilityIdentifier = "bootomLabel"
+        operatorCharacterSet.insert(charactersIn: "+")
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        if UIDevice.current.orientation.isLandscape {
+            print("Landscape")
+            self.pieButton.isHidden = false
+            self.memoryMinus.isHidden = false
+            self.memoryPlus.isHidden = false
+            self.memoryClear.isHidden = false
+            self.memoryRecall.isHidden = false
+            self.multiplicativeInverse.isHidden = false
+            self.tan.isHidden = false
+            self.clearEntry.isHidden = false
+        } else {
+            self.pieButton.isHidden = true
+            self.memoryMinus.isHidden = true
+            self.memoryPlus.isHidden = true
+            self.memoryClear.isHidden = true
+            self.memoryRecall.isHidden = true
+            self.multiplicativeInverse.isHidden = true
+            self.tan.isHidden = true
+            self.clearEntry.isHidden = true
+            print("Portrait")
+        }
+    }
+    
 }
 

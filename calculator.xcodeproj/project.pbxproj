@@ -15,6 +15,8 @@
 		D43A930B1F0188B500CF5CE5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D43A93091F0188B500CF5CE5 /* LaunchScreen.storyboard */; };
 		D43A93161F0188B500CF5CE5 /* calculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43A93151F0188B500CF5CE5 /* calculatorTests.swift */; };
 		D43A93211F0188B500CF5CE5 /* calculatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43A93201F0188B500CF5CE5 /* calculatorUITests.swift */; };
+		D45313801F26EEE600FE597B /* protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D453137F1F26EEE600FE597B /* protocols.swift */; };
+		D45313811F26EEE600FE597B /* protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D453137F1F26EEE600FE597B /* protocols.swift */; };
 		D48784A31F1093E300B5E953 /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D48784A21F1093E300B5E953 /* Calculator.swift */; };
 		D4D1A38B1F1EE756003F454B /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4D1A38A1F1EE756003F454B /* Stack.swift */; };
 /* End PBXBuildFile section */
@@ -51,6 +53,7 @@
 		D43A931C1F0188B500CF5CE5 /* calculatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = calculatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43A93201F0188B500CF5CE5 /* calculatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = calculatorUITests.swift; sourceTree = "<group>"; };
 		D43A93221F0188B500CF5CE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D453137F1F26EEE600FE597B /* protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = protocols.swift; sourceTree = "<group>"; };
 		D48784A21F1093E300B5E953 /* Calculator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 		D4D1A38A1F1EE756003F454B /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -137,6 +140,7 @@
 				D48784A21F1093E300B5E953 /* Calculator.swift */,
 				D42D17A41F12AE120052B0F5 /* Queue.swift */,
 				D4D1A38A1F1EE756003F454B /* Stack.swift */,
+				D453137F1F26EEE600FE597B /* protocols.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -294,6 +298,7 @@
 			files = (
 				D43A93031F0188B500CF5CE5 /* MainViewController.swift in Sources */,
 				D4D1A38B1F1EE756003F454B /* Stack.swift in Sources */,
+				D45313801F26EEE600FE597B /* protocols.swift in Sources */,
 				D43A93011F0188B500CF5CE5 /* AppDelegate.swift in Sources */,
 				D42D17A51F12AE120052B0F5 /* Queue.swift in Sources */,
 				D48784A31F1093E300B5E953 /* Calculator.swift in Sources */,
@@ -305,6 +310,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D43A93161F0188B500CF5CE5 /* calculatorTests.swift in Sources */,
+				D45313811F26EEE600FE597B /* protocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
