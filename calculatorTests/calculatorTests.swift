@@ -44,21 +44,52 @@ class calculatorTests: XCTestCase {
     }
     
     func testParse() {
-        let result: String = calc!.parse(input: "5+5")
+        calc!.parse(input: "5")
+        calc!.parse(input: "+")
+        let result: String = calc!.parse(input: "5")
+        print("my resulst \(result)")
         XCTAssert(result == "5|5|+")
     }
     
+    func testParseWithSolve() {
+        calc!.parse(input: "5")
+        calc!.parse(input: "+")
+        let result: String = calc!.parse(input: "5")
+        print("my resulst \(result)")
+        XCTAssert(result == "5|5|+")
+        XCTAssert(calc?.solve(rpn: result) == "10")
+    }
+    
     func testComplexParse() {
-        let result: String = calc!.parse(input: "5+5*(2+3)/2+(10)-(2.5+5)")
-        XCTAssert(result == "5|5|2|3|+|2|/|*|10|2.5|5|+|-|+|+")
+        calc!.parse(input: "5")
+        calc!.parse(input: "+")
+        calc!.parse(input: "5")
+        calc!.parse(input: "*")
+        calc!.parse(input: "(")
+        calc!.parse(input: "2")
+        calc!.parse(input: "+")
+        calc!.parse(input: "3")
+        calc!.parse(input: ")")
+        calc!.parse(input: "/")
+        calc!.parse(input: "2")
+        calc!.parse(input: "+")
+        calc!.parse(input: "(")
+        calc!.parse(input: "10")
+        calc!.parse(input: ")")
+        calc!.parse(input: "-")
+        calc!.parse(input: "(")
+        calc!.parse(input: "2.5")
+        calc!.parse(input: "+")
+        calc!.parse(input: "5")
+        let result: String = calc!.parse(input: ")")
+        print("my resulst \(result)")
+        XCTAssert(result == "5|5|2|3|+|*|2|/|+|10|+|2.5|5|+|-")
     }
     
     func testMemoryFunctions() {
-        var result: String = calc!.parse(input: "55MP")
-
-        print(result)
-        print(calc?.memoryResult)
-        XCTAssert(calc?.memoryResult == 55)
+        calc?.memoryAdd(value: 20)
+        calc?.memoryMinus(value: 10)
+        XCTAssert(calc?.memoryRecall() == "10")
     }
     
     func testPerformanceExample() {
@@ -70,7 +101,7 @@ class calculatorTests: XCTestCase {
     
 }
 
-public struct mockQueue: PCalculatorQueue {
+struct mockQueue: PCalculatorQueue {
     var elements = ["5", "5"]
     var isEmpty: Bool { return elements.isEmpty }
     
@@ -82,6 +113,13 @@ public struct mockQueue: PCalculatorQueue {
         return elements.removeFirst()
     }
     
+    mutating func clear() {
+        elements.removeAll()
+    }
+    
+    mutating func top() -> String {
+        return elements.last!
+    }
 }
 
 struct mockStack: PCalculatorStack {
@@ -102,5 +140,9 @@ struct mockStack: PCalculatorStack {
     
     mutating func count() -> Int {
         return elements.count
+    }
+    
+    mutating func clear() {
+        elements.removeAll()
     }
 }

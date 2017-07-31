@@ -32,6 +32,17 @@ class ViewController: UIViewController {
         
         let inputLabel: String = ((sender as AnyObject).titleLabel??.text)!
         
+        if inputLabel == "MP" {
+            calc.memoryAdd(value: Double(bottomLabel.text!)!)
+        } else if inputLabel == "MM" {
+            calc.memoryMinus(value: Double(bottomLabel.text!)!)
+        } else if inputLabel == "MC" {
+            calc.memoryClear()
+        } else if inputLabel == "MR" {
+            topLabel.text = calc.memoryRecall()
+        }
+        
+        
         if inputLabel == "CE" && (topLabel.text?.characters.count)! > 0 {
             topLabel.text = topLabel.text?.substring(to: (topLabel.text?.index(before: (topLabel.text?.endIndex)!))!)
         } else if inputLabel == "π" {
@@ -42,7 +53,7 @@ class ViewController: UIViewController {
             //topLabel.text = numberFormatter.string(from: NSNumber(value:calc.memoryResult))!
 
         } else if inputLabel == "+/-" {
-            print(calc.lastNumber())
+           
         } else {
             topLabel.text?.append(inputLabel)
         }
@@ -51,9 +62,10 @@ class ViewController: UIViewController {
             return
         }
 
-        let x: String = calc.parse(input: (topLabel.text)!)
+        let x: String = calc.parse(input: (inputLabel))
         let y: String = calc.solve(rpn: x)
         let operators = ["+", "-", "*", "/"]
+        //bottomLabel.text = x
         if !operators.contains(inputLabel) {
             bottomLabel.text = y
         }
@@ -61,6 +73,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func tappedClear(_ sender: Any) {
+        calc.clear()
         topLabel.text = "0"
         bottomLabel.text = "0"
     }

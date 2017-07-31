@@ -9,40 +9,46 @@
 import Foundation
 
 class Calculator {
-    var mainStack = Stack()
-    var mainOutput = Queue()
-    var lastNumber: String
+    var stack = Stack()
+    var rpnOutput = Queue()
+    var standardOutput = Queue()
+    var tokens = [String]()
+    var memory:Double = 0
     
-    var operators: [String: Int] = ["*": 3, "/": 3, "+": 2, "-": 2, "tan": 4, "+/-": 3]
+    var operators: [String: Int] = ["*": 3, "/": 3, "+": 2, "-": 2, "tan": 4, "+/-": 4]
     
     func parse(input: String) -> String {
-        var stack = Stack()
-        var output = Queue()
-        var segmentedInput: String = input.replacingOccurrences(of: "+", with: "|+|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "-", with: "|-|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "*", with: "|*|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "/", with: "|/|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "(", with: "|(|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: ")", with: "|)|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "MP", with: "|MP|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "MM", with: "|MM|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "MC", with: "|MC|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "MR", with: "|MR|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "tan", with: "|tan|")
-        segmentedInput = segmentedInput.replacingOccurrences(of: "+/-", with: "|+/-|")
+        tokens.removeAll()
+        rpnOutput.clear()
         
-        let tokens = segmentedInput.components(separatedBy: "|")
+        if input == "+/-" {
+            var lastToken: String = standardOutput.top()
+            if lastToken.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil {
+                standardOutput.dequeue()
+                standardOutput.enqueue(newElement: "(")
+                standardOutput.enqueue(newElement: "0")
+                standardOutput.enqueue(newElement: "-")
+                standardOutput.enqueue(newElement: lastToken)
+                standardOutput.enqueue(newElement: ")")
+            }
+            print(lastToken)
+        }
+        
+        while !standardOutput.isEmpty {
+            tokens.append(standardOutput.dequeue())
+        }
+        tokens.append(input)
         
         for token in tokens {
+            standardOutput.enqueue(newElement: token)
             // if token is a number add to queue
             if  token.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil{
-                output.enqueue(newElement: token)
-                lastNumber = token
+                rpnOutput.enqueue(newElement: token)
             //if token is an operator
             } else if isOperator(op: token) {
-                // if the stack has lower operators then pop them to the queue
-                while !stack.isEmpty && isOperator(op: stack.top()) && operators[stack.top()]! > operators[token]! {
-                    output.enqueue(newElement: stack.pop())
+                // if the stack has greater than or equal operators then pop them to the queue
+                while !stack.isEmpty && isOperator(op: stack.top()) && operators[stack.top()]! >= operators[token]! {
+                    rpnOutput.enqueue(newElement: stack.pop())
                 }
                 //push new token to stack
                 stack.push(newElement: token)
@@ -52,7 +58,7 @@ class Calculator {
             } else if token == ")" {
                 // until the token on the stack is the left most parenthesis
                 while !stack.isEmpty && stack.top() != "(" {
-                    output.enqueue(newElement: stack.pop())
+                    rpnOutput.enqueue(newElement: stack.pop())
                 }
                 
                 if stack.isEmpty {
@@ -65,13 +71,10 @@ class Calculator {
         }
         
         while !stack.isEmpty && isOperator(op: stack.top()) {
-            output.enqueue(newElement: stack.pop())
+            rpnOutput.enqueue(newElement: stack.pop())
         }
         
-        mainStack = stack
-        mainOutput = output
-        
-        return output.elements.joined(separator: "|")
+        return rpnOutput.elements.joined(separator: "|")
     }
     
     func isOperator(op: String) -> Bool {
@@ -86,23 +89,24 @@ class Calculator {
     }
     
     func solve(rpn: String) -> String {
-        var stack = Stack()
+        var solveStack = Stack()
         let tokens = rpn.components(separatedBy: "|")
         var result: Double = 0.0
+        var test:String = ""
         
         for token in tokens {
-            // if token is a number add to queue
+            // if token is a number add to stack
             if  token.rangeOfCharacter(from: CharacterSet.decimalDigits) != nil{
-                stack.push(newElement: token)
+                solveStack.push(newElement: token)
                 //if token is an operator
-            } else if token == "tan" && !stack.isEmpty {
-                result = tan(Double(stack.pop())!)
-                stack.push(newElement: DoubletoString(num: result))
-            }else if isOperator(op: token) && stack.count() > 1 {
-                guard let rightOperand:Double = Double(stack.pop()) else {
+            } else if token == "tan" && !solveStack.isEmpty {
+                result = tan(Double(solveStack.pop())!)
+                solveStack.push(newElement: DoubletoString(num: result))
+            }else if isOperator(op: token) && solveStack.count() > 1 {
+                guard let rightOperand:Double = Double(solveStack.pop()) else {
                     return "Failed"
                 }
-                guard let leftOperand:Double = Double(stack.pop()) else {
+                guard let leftOperand:Double = Double(solveStack.pop()) else {
                     return "Failed"
                 }
                 
@@ -115,13 +119,13 @@ class Calculator {
                 } else if token == "/" {
                     result = leftOperand / rightOperand
                 }
-                
+                test.append("\(leftOperand) \(token) \(rightOperand)")
                 
                 let numberFormatter = NumberFormatter()
                 numberFormatter.numberStyle = NumberFormatter.Style.decimal
                 let stringResult:String = numberFormatter.string(from: NSNumber(value:result))!
 
-                stack.push(newElement: stringResult)
+                solveStack.push(newElement: stringResult)
             }
         }
         
@@ -131,14 +135,32 @@ class Calculator {
         return numberFormatter.string(from: NSNumber(value:result))!
     }
     
+    func clear() {
+        stack.clear()
+        rpnOutput.clear()
+        standardOutput.clear()
+    }
+    
+    
     func DoubletoString(num: Double) -> String {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = NumberFormatter.Style.decimal
         return numberFormatter.string(from: NSNumber(value:num))!
     }
     
-    func lastNumber() -> String {
-        return lastNumber
+    func memoryAdd(value: Double) {
+        memory += value
     }
     
+    func memoryMinus(value: Double) {
+        memory -= value
+    }
+    
+    func memoryRecall() -> String {
+        return DoubletoString(num: memory)
+    }
+    
+    func memoryClear() {
+        memory = 0
+    }
 }

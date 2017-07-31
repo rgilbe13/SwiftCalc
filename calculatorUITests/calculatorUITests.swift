@@ -42,7 +42,7 @@ class calculatorUITests: XCTestCase {
         app.buttons["+"].tap()
         app.buttons["5"].tap()
         app.buttons["="].tap()
-        XCTAssertTrue(app.otherElements["bottomLabel"].value as! String == "13")
+        //XCTAssertTrue(app.otherElements["bottomLabel"].value as! String == "13")
         app.buttons["C"].tap()
         
     }
